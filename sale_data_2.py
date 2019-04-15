@@ -32,7 +32,7 @@ class SaleData:
             print(file_path)
             self.data = pd.read_excel(file_path, sheet_name='仓库ToC数据', dtype=
             {'sku_id': str, 'qty': np.float, 'date': str, storeORshop: str}).dropna()
-            self.data = self.data[['sku_id', 'date', 'qty', storeORshop, 'dis_city']]
+            self.data = self.data[['id','sku_id', 'date', 'qty', storeORshop, 'dis_city']]
         else:
             self.data = pd.read_csv(file_path, encoding=encoding, usecols=['sku_id', 'date', 'qty', storeORshop], dtype=
             {'sku_id': str, 'qty': float, 'date': str, storeORshop: str}, low_memory=False).dropna()
@@ -142,14 +142,10 @@ def main_flow(plan_name, area_name):
     RDC_list = CDC_RDC_info['RDC'].drop_duplicates().tolist()
     FAC_CDC_info = duration_info.fac_cdc
     FAC_RDC_info = duration_info.fac_rdc
-    # CDC_RDC_info = pd.read_csv('../data/goods_layout_{}/CDC-RDC.csv'.format(goods_layout))
-    # RDC_FDC_info = pd.read_csv('../data/goods_layout_{}/RDC-FDC.csv'.format(goods_layout))
-    # RDC_list = CDC_RDC_info['RDC'].drop_duplicates().tolist()
-    # FAC_CDC_info = pd.read_csv('../data/goods_layout_{}/FAC-CDC.csv'.format(goods_layout))
-    # FAC_RDC_info = pd.read_csv('../data/goods_layout_{}/FAC-RDC.csv'.format(goods_layout))
 
-    # shop_info = pd.read_csv('../data/goods_layout_{}/shops_match.csv'.format(goods_layout))
-    print('商品布局方案:{}'.format(goods_layout))
+
+
+    # print('商品布局方案:{}'.format(goods_layout))
     if not os.path.exists('E:/DepartmentProject/mlk/data/goods_layout_{}/'.format(plan_name)):
         os.mkdir('E:/DepartmentProject/mlk/data/goods_layout_{}/'.format(plan_name))
         os.mkdir('E:/DepartmentProject/mlk/data/goods_layout_{}/sale/'.format(plan_name))
@@ -173,19 +169,13 @@ def main_flow(plan_name, area_name):
     sale_sum = 0
     stock_sum = 0
 
-    # NBV_sku_list = skudata.data[skudata.data['属性'] == 'NBV'].index.tolist()
-    # xs_sku_list = skudata.data[(skudata.data['factory'] == '咸宁')&(skudata.data['属性'] != 'NBV')].index.tolist()
-    # supply_sku_list = skudata.data[(skudata.data['factory'] == '供应商')&(skudata.data['属性'] != 'NBV')].index.tolist()
-    # danger_sku_list = skudata.data[(skudata.data['factory'] == '启东')&(skudata.data['属性'] != 'NBV')].index.tolist()
+
 
     data_cdc_guangzhou_toc = saledata_toc.get_sales('杭州', storeORshop='store_city').fillna(0)
     sale_sum += data_cdc_guangzhou_toc.values.sum()
     cdc_guangzhou_sale = pd.DataFrame(index=data_cdc_guangzhou_toc.index)
 
-    # data_cdc_wuhan_toc = saledata_toc.get_sales('武汉', storeORshop='store_city', sku_list=xs_sku_list).fillna(0)
-    # sale_sum += data_cdc_wuhan_toc.values.sum()
-    # cdc_wuhan_sale = pd.DataFrame(index=data_cdc_wuhan_toc.index)
-    # shop_num = 0
+
     for RDC in RDC_list:
         # for RDC in ['成都']:
         data_rdc_toc = saledata_toc.get_sales(RDC, storeORshop='store_city').fillna(0)
